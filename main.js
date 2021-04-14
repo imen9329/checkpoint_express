@@ -3,13 +3,18 @@ const app = express();
 const port = 4000;
 const timeCheck = (req, res, next) => {
     const time = new Date();
-    if (time.getDay() == 0 || time.getDay() == 6) {
-        return "Please come back in work days";
+    if (
+        time.getDay() == 0 ||
+        time.getDay() == 6 ||
+        time.getHours() < 9 ||
+        time.getHours() > 17
+    ) {
+        return res.sendFile(__dirname + "/myapp/closeTime.html");
     }
-    if (time.getHours) next();
+    next();
 };
 
-app.use(timeCheck);
+app.use("/home|/services|/contact", timeCheck);
 
 app.get("/home", (req, res) => {
     res.sendFile(__dirname + "/myapp/index.html");
